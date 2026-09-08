@@ -23,16 +23,13 @@ body {
     color: #111;
 }
 
-/* HEADER */
-
 header {
-    height: 75px;
     background: #050505;
     color: white;
+    padding: 10px 5%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 6%;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -51,21 +48,18 @@ header {
     padding: 11px 18px;
     border-radius: 25px;
     font-weight: bold;
-    cursor: pointer;
 }
-
-/* HERO */
 
 .hero {
     background: #111;
     color: white;
     text-align: center;
-    padding: 80px 20px;
+    padding: 75px 20px;
 }
 
 .hero h1 {
     font-size: clamp(40px, 9vw, 75px);
-    margin: 10px 0;
+    margin: 15px 0;
 }
 
 .hero p {
@@ -74,16 +68,14 @@ header {
 
 .shop-btn {
     display: inline-block;
-    margin-top: 20px;
-    padding: 14px 28px;
     background: white;
     color: black;
+    padding: 14px 28px;
+    margin-top: 15px;
     text-decoration: none;
-    font-weight: bold;
     border-radius: 6px;
+    font-weight: bold;
 }
-
-/* SHOP */
 
 .shop {
     max-width: 1200px;
@@ -91,17 +83,12 @@ header {
     padding: 40px 20px;
 }
 
-.shop h2 {
-    text-align: center;
-    font-size: 32px;
-}
-
 .search {
     display: block;
     width: 100%;
     max-width: 500px;
-    margin: 25px auto;
-    padding: 15px;
+    margin: 20px auto;
+    padding: 14px;
     border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 16px;
@@ -112,7 +99,7 @@ header {
     justify-content: center;
     flex-wrap: wrap;
     gap: 10px;
-    margin-bottom: 30px;
+    margin: 25px 0;
 }
 
 .category-btn {
@@ -120,10 +107,7 @@ header {
     background: white;
     border: 1px solid #111;
     border-radius: 20px;
-    cursor: pointer;
 }
-
-/* PRODUCTS */
 
 .products {
     display: grid;
@@ -139,17 +123,43 @@ header {
     box-shadow: 0 3px 15px rgba(0,0,0,.08);
 }
 
-.product-image img {
+.gallery {
+    position: relative;
     width: 100%;
+    height: 280px;
+    overflow: hidden;
+    background: #eee;
+}
+
+.gallery-track {
+    display: flex;
+    height: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+.gallery-track::-webkit-scrollbar {
+    display: none;
+}
+
+.gallery-track img {
+    width: 100%;
+    min-width: 100%;
     height: 100%;
     object-fit: cover;
+    scroll-snap-align: start;
 }
-    height: 220px;
-    background: #e8e8e8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 80px;
+
+.photo-count {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: rgba(0,0,0,.65);
+    color: white;
+    padding: 6px 9px;
+    border-radius: 15px;
+    font-size: 12px;
 }
 
 .product-info {
@@ -157,45 +167,38 @@ header {
 }
 
 .product-info h3 {
-    margin: 0 0 8px;
-}
-
-.category {
-    color: #777;
-    font-size: 14px;
+    margin-top: 0;
 }
 
 .price {
     font-size: 21px;
     font-weight: bold;
-    margin: 12px 0;
+    margin: 10px 0;
 }
 
-.size-select {
+.size {
     width: 100%;
-    padding: 10px;
+    padding: 11px;
     border: 1px solid #ddd;
     border-radius: 6px;
 }
 
 .add {
     width: 100%;
-    padding: 12px;
     margin-top: 10px;
+    padding: 13px;
+    border: 0;
     background: #111;
     color: white;
-    border: none;
     border-radius: 6px;
-    cursor: pointer;
+    font-weight: bold;
 }
-
-/* CART */
 
 .cart-box {
     display: none;
     position: fixed;
     right: 15px;
-    top: 85px;
+    top: 80px;
     width: min(420px, calc(100% - 30px));
     max-height: 85vh;
     overflow-y: auto;
@@ -211,67 +214,38 @@ header {
 }
 
 .cart-item {
-    padding: 15px 0;
+    padding: 14px 0;
     border-bottom: 1px solid #ddd;
-}
-
-.cart-top {
-    display: flex;
-    justify-content: space-between;
-}
-
-.quantity {
-    margin-top: 8px;
 }
 
 .quantity button {
     padding: 5px 10px;
-    margin: 0 4px;
+    margin: 5px;
 }
 
-.remove {
-    background: none;
-    border: none;
-    color: #c00;
-    cursor: pointer;
-}
-
-/* CHECKOUT */
-
-.checkout-form {
-    margin-top: 25px;
-    border-top: 1px solid #ddd;
-    padding-top: 20px;
-}
-
-.checkout-form input,
-.checkout-form textarea {
+.checkout input,
+.checkout textarea {
     width: 100%;
     padding: 12px;
-    margin-bottom: 10px;
+    margin: 6px 0;
     border: 1px solid #ddd;
     border-radius: 6px;
-    font-size: 15px;
 }
 
-.checkout-form textarea {
+.checkout textarea {
     min-height: 80px;
-    resize: vertical;
 }
 
 .whatsapp {
     width: 100%;
-    padding: 15px;
-    border: none;
-    border-radius: 7px;
+    padding: 14px;
     background: #25D366;
     color: white;
-    font-size: 16px;
+    border: 0;
+    border-radius: 7px;
     font-weight: bold;
-    cursor: pointer;
+    margin-top: 10px;
 }
-
-/* FOOTER */
 
 footer {
     margin-top: 50px;
@@ -285,6 +259,7 @@ footer {
 
 </head>
 
+
 <body>
 
 
@@ -294,7 +269,7 @@ footer {
 
 <img
 src="{{ url_for('static', filename='images/srk-logo.png') }}"
-alt="SRK Men's Clothing">
+alt="SRK">
 
 </div>
 
@@ -302,7 +277,8 @@ alt="SRK Men's Clothing">
 class="cart-button"
 onclick="toggleCart()">
 
-🛒 Cart (<span id="cart-count">0</span>)
+🛒 Cart
+(<span id="cart-count">0</span>)
 
 </button>
 
@@ -319,11 +295,10 @@ onclick="toggleCart()">
 Style • Comfort • Confidence
 </p>
 
-<a
-href="#shop"
+<a href="#shop"
 class="shop-btn">
 
-SHOP COLLECTION
+SHOP NOW
 
 </a>
 
@@ -340,7 +315,7 @@ id="shop">
 <input
 class="search"
 id="search"
-placeholder="Search products..."
+placeholder="🔍 Search products..."
 oninput="displayProducts()">
 
 
@@ -354,29 +329,17 @@ All
 
 </button>
 
-<button
-class="category-btn"
-onclick="setCategory('T-Shirts')">
-
-T-Shirts
-
-</button>
+{% for category in categories %}
 
 <button
 class="category-btn"
-onclick="setCategory('Shirts')">
+onclick="setCategory('{{ category }}')">
 
-Shirts
-
-</button>
-
-<button
-class="category-btn"
-onclick="setCategory('Jeans')">
-
-Jeans
+{{ category }}
 
 </button>
+
+{% endfor %}
 
 </div>
 
@@ -390,47 +353,40 @@ id="products">
 </section>
 
 
-<!-- CART -->
-
 <div
 class="cart-box"
 id="cart">
 
-<h2>Your Cart</h2>
+<h2>🛒 Your Cart</h2>
 
 <div id="cart-items"></div>
 
 <h3>
-
-Total:
-₹<span id="total">0</span>
-
+Total: ₹<span id="total">0</span>
 </h3>
 
 
-<div class="checkout-form">
-
+<div class="checkout">
 <h3>Delivery Details</h3>
 
 <input
 id="customer-name"
-placeholder="Your Name">
+placeholder="Full Name">
 
 <input
 id="customer-phone"
-placeholder="Phone Number"
-type="tel">
+type="tel"
+placeholder="Phone Number">
 
 <textarea
 id="customer-address"
-placeholder="Delivery Address"></textarea>
-
+placeholder="Complete Delivery Address"></textarea>
 
 <button
 class="whatsapp"
 onclick="orderWhatsApp()">
 
-🟢 PLACE ORDER ON WHATSAPP
+🟢 ORDER ON WHATSAPP
 
 </button>
 
@@ -448,8 +404,6 @@ onclick="orderWhatsApp()">
 <p>
 Style • Comfort • Confidence
 </p>
-
-<p>© 2026 SRK</p>
 
 </footer>
 
@@ -505,48 +459,81 @@ return nameMatch && categoryMatch;
 
 filtered.forEach(product => {
 
-const sizes =
-product.sizes
-.map(size =>
-`<option value="${size}">
+let photos = "";
+
+
+product.images.forEach(image => {
+
+photos += `
+
+<img
+src="/static/uploads/${image}"
+alt="${product.name}">
+
+`;
+
+});
+
+
+let sizes = "";
+
+product.sizes.forEach(size => {
+
+sizes += `
+
+<option value="${size}">
 ${size}
-</option>`
-)
-.join("");
+</option>
+
+`;
+
+});
 
 
 container.innerHTML += `
 
 <div class="product">
 
-<div class="product-image">
+<div class="gallery">
 
-<img src="/static/images/${product.images[0]}" alt="${product.name}">
+<div class="gallery-track">
+
+${photos}
 
 </div>
+
+<div class="photo-count">
+
+${product.images.length} photo(s)
+
+</div>
+
+</div>
+
 
 <div class="product-info">
 
 <h3>
-
 ${product.name}
 </h3>
 
-<div class="category">
-${product.category}
-</div>
+<p>
+${product.description || ""}
+</p>
 
 <div class="price">
 ₹${product.price}
 </div>
 
+
 <select
-class="size-select"
+class="size"
 id="size-${product.id}">
 
 ${sizes}
 
 </select>
+
 
 <button
 class="add"
@@ -574,7 +561,7 @@ products.find(p => p.id === id);
 
 const size =
 document.getElementById(
-`size-${id}`
+"size-" + id
 ).value;
 
 
@@ -593,7 +580,11 @@ existing.quantity++;
 
 cart.push({
 
-...product,
+id: product.id,
+
+name: product.name,
+
+price: product.price,
 
 size: size,
 
@@ -607,7 +598,10 @@ quantity: 1
 updateCart();
 
 alert(
-`${product.name} (${size}) added to cart`
+product.name +
+" (" +
+size +
+") added to cart"
 );
 
 }
@@ -657,7 +651,8 @@ let count = 0;
 cart.forEach((item, index) => {
 
 const subtotal =
-item.price * item.quantity;
+item.price *
+item.quantity;
 
 total += subtotal;
 
@@ -668,31 +663,19 @@ container.innerHTML += `
 
 <div class="cart-item">
 
-<div class="cart-top">
-
 <strong>
 ${item.name}
 </strong>
 
-<button
-class="remove"
-onclick="removeItem(${index})">
+<br>
 
-Remove
-
-</button>
-
-</div>
-
-<div>
 Size: ${item.size}
-</div>
+
+<br>
+
+₹${item.price}
 
 <div>
-₹${item.price} × ${item.quantity}
-</div>
-
-<div class="quantity">
 
 <button
 onclick="changeQuantity(${index}, -1)">
@@ -704,6 +687,11 @@ ${item.quantity}
 <button
 onclick="changeQuantity(${index}, 1)">
 +
+</button>
+
+<button
+onclick="removeItem(${index})">
+Remove
 </button>
 
 </div>
@@ -732,109 +720,184 @@ document
 
 }
 
+async function orderWhatsApp() {
 
-function orderWhatsApp() {
+    if (cart.length === 0) {
+        alert("Your cart is empty.");
+        return;
+    }
 
-if (cart.length === 0) {
+    const name = document
+        .getElementById("customer-name")
+        .value
+        .trim();
 
-alert("Your cart is empty.");
+    const phone = document
+        .getElementById("customer-phone")
+        .value
+        .trim();
 
-return;
+    const address = document
+        .getElementById("customer-address")
+        .value
+        .trim();
 
+    if (!name || !phone || !address) {
+        alert(
+            "Please enter your name, phone number and address."
+        );
+        return;
+    }
+
+    let total = 0;
+    let totalQuantity = 0;
+    let orderItems = "";
+
+    cart.forEach(item => {
+
+        const subtotal =
+            item.price * item.quantity;
+
+        total += subtotal;
+        totalQuantity += item.quantity;
+
+        orderItems +=
+            item.name +
+            " | Size: " +
+            item.size +
+            " | Qty: " +
+            item.quantity +
+            " | ₹" +
+            subtotal +
+            "\n";
+    });
+
+    const orderData =
+        new URLSearchParams();
+
+    orderData.append(
+        "customer_name",
+        name
+    );
+
+    orderData.append(
+        "phone",
+        phone
+    );
+
+    orderData.append(
+        "address",
+        address
+    );
+
+    orderData.append(
+        "product_name",
+        orderItems.trim()
+    );
+
+    orderData.append(
+        "size",
+        "Multiple"
+    );
+
+    orderData.append(
+        "quantity",
+        totalQuantity
+    );
+
+    orderData.append(
+        "total",
+        total
+    );
+
+
+    try {
+
+        const response = await fetch(
+            "/order",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/x-www-form-urlencoded"
+                },
+                body: orderData.toString()
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                "Order could not be saved."
+            );
+        }
+
+    } catch (error) {
+
+        alert(
+            "Could not save your order. Please try again."
+        );
+
+        return;
+    }
+
+
+    let message =
+        "Hello SRK Men's Clothing!%0A%0A";
+
+    message +=
+        "*New Order*%0A%0A";
+
+    message +=
+        "*Customer:* " +
+        encodeURIComponent(name) +
+        "%0A";
+
+    message +=
+        "*Phone:* " +
+        encodeURIComponent(phone) +
+        "%0A";
+
+    message +=
+        "*Address:* " +
+        encodeURIComponent(address) +
+        "%0A%0A";
+
+    message +=
+        "*Products:*%0A";
+
+    cart.forEach(item => {
+
+        const subtotal =
+            item.price * item.quantity;
+
+        message +=
+            encodeURIComponent(
+                item.name +
+                " | Size: " +
+                item.size +
+                " | Qty: " +
+                item.quantity +
+                " | ₹" +
+                subtotal
+            ) +
+            "%0A";
+    });
+
+    message +=
+        "%0A*Total: ₹" +
+        total +
+        "*";
+
+
+    const whatsapp =
+        "919620030375";
+
+    window.location.href =
+        "https://wa.me/" +
+        whatsapp +
+        "?text=" +
+        message;
 }
-
-
-const name =
-document.getElementById(
-"customer-name"
-).value.trim();
-
-const phone =
-document.getElementById(
-"customer-phone"
-).value.trim();
-
-const address =
-document.getElementById(
-"customer-address"
-).value.trim();
-
-
-if (!name || !phone || !address) {
-
-alert(
-"Please enter your name, phone number and delivery address."
-);
-
-return;
-
-}
-
-
-let message =
-"Hello SRK Men's Clothing!%0A%0A";
-
-message +=
-"*New Order*%0A%0A";
-
-message +=
-"Name: " +
-encodeURIComponent(name) +
-"%0A";
-
-message +=
-"Phone: " +
-encodeURIComponent(phone) +
-"%0A";
-
-message +=
-"Address: " +
-encodeURIComponent(address) +
-"%0A%0A";
-
-
-message += "*Products:*%0A";
-
-
-let total = 0;
-
-
-cart.forEach(item => {
-
-const subtotal =
-item.price * item.quantity;
-
-total += subtotal;
-
-
-message +=
-encodeURIComponent(
-`${item.name} | Size: ${item.size} | Qty: ${item.quantity} | ₹${subtotal}`
-)
-+ "%0A";
-
-});
-
-
-message +=
-"%0ATotal: ₹" + total;
-
-
-const whatsappNumber =
-"919620030375";
-
-
-const url =
-"https://wa.me/" +
-whatsappNumber +
-"?text=" +
-message;
-
-
-window.open(url, "_blank");
-
-}
-
 
 displayProducts();
 

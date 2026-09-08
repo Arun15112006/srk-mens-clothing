@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1">
+
+<title>SRK Orders</title>
+
+<style>
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+}
+
+header {
+    background: #111;
+    color: white;
+    padding: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+}
+
+.stats {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    margin-bottom: 20px;
+}
+
+.order {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    margin-bottom: 20px;
+    border-left: 5px solid #111;
+}
+
+.new-order {
+    border-left-color: #1976d2;
+}
+
+.order h2 {
+    margin-top: 0;
+}
+
+.info {
+    line-height: 1.7;
+}
+
+.phone {
+    color: #1976d2;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.products {
+    background: #f7f7f7;
+    padding: 14px;
+    border-radius: 8px;
+    white-space: pre-line;
+    line-height: 1.6;
+}
+
+.status-form {
+    margin-top: 15px;
+}
+
+select {
+    width: 100%;
+    max-width: 350px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+}
+
+button {
+    padding: 11px 18px;
+    margin-top: 8px;
+    background: #111;
+    color: white;
+    border: 0;
+    border-radius: 6px;
+}
+
+.delete {
+    background: #c62828;
+    margin-left: 8px;
+}
+
+.empty {
+    background: white;
+    padding: 30px;
+    text-align: center;
+    border-radius: 12px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<strong>SRK ORDERS</strong>
+
+<a href="/admin">
+ADMIN
+</a>
+
+</header>
+
+
+<div class="container">
+
+<div class="stats">
+
+<h2>
+Orders: {{ orders|length }}
+</h2>
+
+<p>
+Manage your customer orders below.
+</p>
+
+</div>
+
+
+{% for order in orders %}
+
+<div class="order
+{% if order.status == 'New' %}
+new-order
+{% endif %}">
+
+<h2>
+Order #{{ order.id }}
+</h2>
+
+<div class="info">
+
+<strong>Customer:</strong>
+{{ order.customer_name }}
+
+<br>
+
+<strong>Phone:</strong>
+
+<a
+class="phone"
+href="tel:{{ order.phone }}">
+
+{{ order.phone }}
+
+</a>
+
+<br>
+
+<strong>Address:</strong>
+{{ order.address }}
+
+<br>
+
+<strong>Order date:</strong>
+{{ order.created_at }}
+
+</div>
+
+
+<h3>Products</h3>
+
+<div class="products">
+{{ order.product_name }}
+</div>
+
+
+<h3>
+Total: ₹{{ order.total }}
+</h3>
+
+
+<p>
+<strong>Status:</strong>
+{{ order.status }}
+</p>
+
+
+<form
+class="status-form"
+method="POST"
+action="/admin/orders/status/{{ order.id }}">
+
+<label>
+Change order status
+</label>
+
+<br>
+
+<select name="status">
+
+<option
+value="New"
+{% if order.status == "New" %}selected{% endif %}>
+New
+</option>
+
+<option
+value="Confirmed"
+{% if order.status == "Confirmed" %}selected{% endif %}>
+Confirmed
+</option>
+
+<option
+value="Shipped"
+{% if order.status == "Shipped" %}selected{% endif %}>
+Shipped
+</option>
+
+<option
+value="Delivered"
+{% if order.status == "Delivered" %}selected{% endif %}>
+Delivered
+</option>
+
+<option
+value="Cancelled"
+{% if order.status == "Cancelled" %}selected{% endif %}>
+Cancelled
+</option>
+
+</select>
+
+<br>
+
+<button type="submit">
+UPDATE STATUS
+</button>
+
+</form>
+
+
+<form
+method="POST"
+action="/admin/orders/delete/{{ order.id }}"
+onsubmit="return confirm('Delete this order?');"
+style="display:inline;">
+
+<button
+class="delete"
+type="submit">
+
+DELETE ORDER
+
+</button>
+
+</form>
+
+</div>
+
+{% else %}
+
+<div class="empty">
+
+<h2>No orders yet</h2>
+
+<p>
+Customer orders will appear here.
+</p>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</body>
+
+</html>

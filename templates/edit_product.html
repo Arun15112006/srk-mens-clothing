@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1">
+
+<title>Edit Product - SRK</title>
+
+<style>
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+}
+
+header {
+    background: #111;
+    color: white;
+    padding: 18px;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+}
+
+.box {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+}
+
+input,
+textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px;
+    margin: 7px 0 15px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+}
+
+textarea {
+    min-height: 100px;
+}
+
+button,
+.back {
+    display: inline-block;
+    padding: 13px 18px;
+    border: 0;
+    background: #111;
+    color: white;
+    text-decoration: none;
+    border-radius: 7px;
+    margin-top: 8px;
+}
+
+.photos {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.photos img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.warning {
+    font-size: 13px;
+    color: #777;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<strong>SRK ADMIN — EDIT PRODUCT</strong>
+
+</header>
+
+<div class="container">
+
+<div class="box">
+
+<h2>Edit Product</h2>
+
+<form
+method="POST"
+enctype="multipart/form-data">
+
+<label>Product Name</label>
+
+<input
+name="name"
+value="{{ product.name }}"
+required>
+
+
+<label>Price (₹)</label>
+
+<input
+name="price"
+type="number"
+step="0.01"
+value="{{ product.price }}"
+required>
+
+
+<label>Category</label>
+
+<input
+name="category"
+value="{{ product.category }}"
+required>
+
+
+<label>Sizes</label>
+
+<input
+name="sizes"
+value="{{ product.sizes | join(',') }}"
+required>
+
+
+<label>Description</label>
+
+<textarea
+name="description">{{ product.description }}</textarea>
+
+
+<h3>Current Photos</h3>
+
+<div class="photos">
+
+{% for image in product.images %}
+
+<img
+src="/static/uploads/{{ image }}">
+
+{% else %}
+
+<p>No photos.</p>
+
+{% endfor %}
+
+</div>
+
+
+<label>Replace Photos</label>
+
+<input
+type="file"
+name="images"
+accept="image/*"
+multiple>
+
+<p class="warning">
+If you select new photos, the old photos will be replaced.
+Leave this empty to keep the current photos.
+</p>
+
+
+<button type="submit">
+SAVE CHANGES
+</button>
+
+<a
+class="back"
+href="/admin">
+CANCEL
+</a>
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

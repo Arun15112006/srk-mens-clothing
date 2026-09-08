@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1">
+
+<title>SRK Admin Dashboard</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f3f3;
+    color: #111;
+}
+
+header {
+    background: #111;
+    color: white;
+    padding: 18px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+}
+
+.header-links a {
+    margin-left: 15px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+}
+
+.dashboard-title {
+    margin-bottom: 20px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns:
+        repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.stat {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+.stat h2 {
+    margin: 0;
+    font-size: 30px;
+}
+
+.stat p {
+    margin-bottom: 0;
+    color: #666;
+}
+
+.quick {
+    background: #111;
+    color: white;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+.quick a {
+    display: inline-block;
+    background: white;
+    color: #111;
+    padding: 10px 16px;
+    text-decoration: none;
+    border-radius: 7px;
+    margin-top: 8px;
+}
+
+.box {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 14px;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 7px 0 14px;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+}
+
+textarea {
+    min-height: 100px;
+}
+
+button {
+    padding: 12px 18px;
+    border: 0;
+    background: #111;
+    color: white;
+    border-radius: 7px;
+}
+
+.product {
+    border-top: 1px solid #ddd;
+    padding: 18px 0;
+}
+
+.product img {
+    width: 85px;
+    height: 85px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 4px;
+}
+
+.edit {
+    display: inline-block;
+    padding: 11px 18px;
+    background: #1976d2;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    margin-right: 7px;
+}
+
+.delete {
+    background: #c62828;
+}
+
+.message {
+    background: #e8f5e9;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+}
+
+@media (max-width: 600px) {
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .header-links a {
+        margin-left: 0;
+        margin-right: 15px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<strong>SRK ADMIN</strong>
+
+<div class="header-links">
+
+<a href="/admin/orders">
+ORDERS
+</a>
+
+<a href="/admin/logout">
+LOGOUT
+</a>
+
+</div>
+
+</header>
+
+
+<div class="container">
+
+<h1 class="dashboard-title">
+Dashboard
+</h1>
+
+
+<div class="stats">
+
+<div class="stat">
+
+<h2>
+{{ products|length }}
+</h2>
+
+<p>
+Products
+</p>
+
+</div>
+
+
+<div class="stat">
+
+<h2>
+{{ total_orders }}
+</h2>
+
+<p>
+Total Orders
+</p>
+
+</div>
+
+
+<div class="stat">
+
+<h2>
+{{ new_orders }}
+</h2>
+
+<p>
+New Orders
+</p>
+
+</div>
+
+</div>
+
+
+<div class="quick">
+
+<h2>
+Customer Orders
+</h2>
+
+<p>
+You have {{ new_orders }} new order(s).
+</p>
+
+<a href="/admin/orders">
+VIEW ORDERS
+</a>
+
+</div>
+
+
+{% with messages =
+get_flashed_messages() %}
+
+{% for message in messages %}
+
+<div class="message">
+{{ message }}
+</div>
+
+{% endfor %}
+
+{% endwith %}
+
+
+<div class="box">
+
+<h2>
+Add New Product
+</h2>
+
+<form
+method="POST"
+action="/admin/add"
+enctype="multipart/form-data">
+
+<input
+name="name"
+placeholder="Product name"
+required>
+
+<input
+name="price"
+type="number"
+step="0.01"
+placeholder="Price"
+required>
+
+<input
+name="category"
+placeholder="Category"
+required>
+
+<input
+name="sizes"
+placeholder="Sizes e.g. S,M,L,XL,XXL"
+required>
+
+<textarea
+name="description"
+placeholder="Product description"></textarea>
+
+<label>
+Product Photos
+</label>
+
+<input
+type="file"
+name="images"
+accept="image/*"
+multiple>
+
+<button type="submit">
+ADD PRODUCT
+</button>
+
+</form>
+
+</div>
+
+
+<div class="box">
+
+<h2>
+Products
+</h2>
+
+
+{% for product in products %}
+
+<div class="product">
+
+<h3>
+{{ product.name }}
+</h3>
+
+<p>
+<strong>₹{{ product.price }}</strong>
+</p>
+
+<p>
+Category: {{ product.category }}
+</p>
+
+<p>
+Sizes: {{ product.sizes | join(', ') }}
+</p>
+
+<p>
+{{ product.description }}
+</p>
+
+
+{% for image in product.images %}
+
+<img
+src="/static/uploads/{{ image }}">
+
+{% endfor %}
+
+<br><br>
+
+
+<a
+class="edit"
+href="/admin/edit/{{ product.id }}">
+EDIT
+</a>
+
+
+<form
+method="POST"
+action="/admin/delete/{{ product.id }}"
+onsubmit="return confirm('Delete this product?');"
+style="display:inline;">
+
+<button
+class="delete"
+type="submit">
+
+DELETE
+
+</button>
+
+</form>
+
+</div>
+
+
+{% else %}
+
+<p>
+No products yet.
+</p>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</body>
+
+</html>
