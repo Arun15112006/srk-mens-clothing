@@ -1,55 +1,116 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
 products = [
     {
         "id": 1,
-        "name": "Classic Black T-Shirt",
-        "price": 499,
-        "category": "T-Shirts",
-        "emoji": "👕",
+        "name": "Red Baggy Shirt",
+        "price": 799,
+        "category": "Baggy Shirts",
+        "images": [
+            "Baggy Shirts red.jpg"
+        ],
         "sizes": ["S", "M", "L", "XL", "XXL"]
     },
+
     {
         "id": 2,
-        "name": "Premium White Shirt",
-        "price": 899,
-        "category": "Shirts",
-        "emoji": "👔",
+        "name": "Brown Baggy Shirt",
+        "price": 799,
+        "category": "Baggy Shirts",
+        "images": [
+            "Baggy shirt brown.jpg"
+        ],
         "sizes": ["S", "M", "L", "XL", "XXL"]
     },
+
     {
         "id": 3,
-        "name": "Blue Denim Jeans",
-        "price": 1299,
-        "category": "Jeans",
-        "emoji": "👖",
-        "sizes": ["28", "30", "32", "34", "36", "38"]
+        "name": "Green Baggy Shirt",
+        "price": 799,
+        "category": "Baggy Shirts",
+        "images": [
+            "Baggy shirt green.jpg"
+        ],
+        "sizes": ["S", "M", "L", "XL", "XXL"]
     },
+
     {
         "id": 4,
-        "name": "Casual Black Shirt",
-        "price": 799,
-        "category": "Shirts",
-        "emoji": "👔",
-        "sizes": ["S", "M", "L", "XL", "XXL"]
+        "name": "Black Baggy Pant",
+        "price": 999,
+        "category": "Baggy Pants",
+        "images": [
+            "Baggy pant black.jpg"
+        ],
+        "sizes": ["28", "30", "32", "34", "36", "38"]
     },
+
     {
         "id": 5,
-        "name": "Oversized Black T-Shirt",
-        "price": 599,
-        "category": "T-Shirts",
-        "emoji": "👕",
-        "sizes": ["S", "M", "L", "XL", "XXL"]
+        "name": "Brown Baggy Pant",
+        "price": 999,
+        "category": "Baggy Pants",
+        "images": [
+            "Baggy pant brown.jpg"
+        ],
+        "sizes": ["28", "30", "32", "34", "36", "38"]
     },
+
     {
         "id": 6,
-        "name": "Slim Fit Jeans",
-        "price": 1499,
-        "category": "Jeans",
-        "emoji": "👖",
-        "sizes": ["28", "30", "32", "34", "36", "38"]
+        "name": "Grey Polo T-Shirt",
+        "price": 599,
+        "category": "Polo T-Shirts",
+        "images": [
+            "Polo tshirt grey.jpg"
+        ],
+        "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+
+    {
+        "id": 7,
+        "name": "Light Blue Polo T-Shirt",
+        "price": 599,
+        "category": "Polo T-Shirts",
+        "images": [
+            "Polo tshirt light blue.jpg"
+        ],
+        "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+
+    {
+        "id": 8,
+        "name": "Navy Blue Polo T-Shirt",
+        "price": 599,
+        "category": "Polo T-Shirts",
+        "images": [
+            "Polo tshirt navy blue.jpg"
+        ],
+        "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+
+    {
+        "id": 9,
+        "name": "Red Polo T-Shirt",
+        "price": 599,
+        "category": "Polo T-Shirts",
+        "images": [
+            "Polo tshirt red.jpg"
+        ],
+        "sizes": ["S", "M", "L", "XL", "XXL"]
+    },
+
+    {
+        "id": 10,
+        "name": "White Polo T-Shirt",
+        "price": 599,
+        "category": "Polo T-Shirts",
+        "images": [
+            "Polo tshirt white.jpg"
+        ],
+        "sizes": ["S", "M", "L", "XL", "XXL"]
     }
 ]
 
@@ -61,7 +122,7 @@ def home():
 
 @app.route("/products")
 def product_list():
-    return jsonify(products)
+    return products
 
 
 if __name__ == "__main__":
