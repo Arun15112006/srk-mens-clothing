@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>SRK Men's Clothing</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    color: #111;
+}
+
+/* HEADER */
+
+header {
+    height: 75px;
+    background: #050505;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 6%;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo img {
+    width: 90px;
+    height: 55px;
+    object-fit: contain;
+}
+
+.cart-button {
+    background: white;
+    color: black;
+    border: none;
+    padding: 11px 18px;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* HERO */
+
+.hero {
+    background: #111;
+    color: white;
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.hero h1 {
+    font-size: clamp(40px, 9vw, 75px);
+    margin: 10px 0;
+}
+
+.hero p {
+    color: #ccc;
+}
+
+.shop-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 14px 28px;
+    background: white;
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 6px;
+}
+
+/* SHOP */
+
+.shop {
+    max-width: 1200px;
+    margin: auto;
+    padding: 40px 20px;
+}
+
+.shop h2 {
+    text-align: center;
+    font-size: 32px;
+}
+
+.search {
+    display: block;
+    width: 100%;
+    max-width: 500px;
+    margin: 25px auto;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.categories {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.category-btn {
+    padding: 10px 18px;
+    background: white;
+    border: 1px solid #111;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+/* PRODUCTS */
+
+.products {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.product {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 15px rgba(0,0,0,.08);
+}
+
+.product-image {
+    height: 220px;
+    background: #e8e8e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+}
+
+.product-info {
+    padding: 18px;
+}
+
+.product-info h3 {
+    margin: 0 0 8px;
+}
+
+.category {
+    color: #777;
+    font-size: 14px;
+}
+
+.price {
+    font-size: 21px;
+    font-weight: bold;
+    margin: 12px 0;
+}
+
+.size-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.add {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background: #111;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* CART */
+
+.cart-box {
+    display: none;
+    position: fixed;
+    right: 15px;
+    top: 85px;
+    width: min(420px, calc(100% - 30px));
+    max-height: 85vh;
+    overflow-y: auto;
+    background: white;
+    padding: 22px;
+    border-radius: 14px;
+    box-shadow: 0 5px 30px rgba(0,0,0,.3);
+    z-index: 200;
+}
+
+.cart-box.show {
+    display: block;
+}
+
+.cart-item {
+    padding: 15px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.cart-top {
+    display: flex;
+    justify-content: space-between;
+}
+
+.quantity {
+    margin-top: 8px;
+}
+
+.quantity button {
+    padding: 5px 10px;
+    margin: 0 4px;
+}
+
+.remove {
+    background: none;
+    border: none;
+    color: #c00;
+    cursor: pointer;
+}
+
+/* CHECKOUT */
+
+.checkout-form {
+    margin-top: 25px;
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}
+
+.checkout-form input,
+.checkout-form textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+.checkout-form textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.whatsapp {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 7px;
+    background: #25D366;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* FOOTER */
+
+footer {
+    margin-top: 50px;
+    padding: 35px;
+    background: #050505;
+    color: white;
+    text-align: center;
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<header>
+
+<div class="logo">
+
+<img
+src="{{ url_for('static', filename='images/srk-logo.png') }}"
+alt="SRK Men's Clothing">
+
+</div>
+
+<button
+class="cart-button"
+onclick="toggleCart()">
+
+🛒 Cart (<span id="cart-count">0</span>)
+
+</button>
+
+</header>
+
+
+<section class="hero">
+
+<p>SRK MEN'S CLOTHING</p>
+
+<h1>WEAR A BETTER YOU</h1>
+
+<p>
+Style • Comfort • Confidence
+</p>
+
+<a
+href="#shop"
+class="shop-btn">
+
+SHOP COLLECTION
+
+</a>
+
+</section>
+
+
+<section
+class="shop"
+id="shop">
+
+<h2>Our Collection</h2>
+
+
+<input
+class="search"
+id="search"
+placeholder="Search products..."
+oninput="displayProducts()">
+
+
+<div class="categories">
+
+<button
+class="category-btn"
+onclick="setCategory('All')">
+
+All
+
+</button>
+
+<button
+class="category-btn"
+onclick="setCategory('T-Shirts')">
+
+T-Shirts
+
+</button>
+
+<button
+class="category-btn"
+onclick="setCategory('Shirts')">
+
+Shirts
+
+</button>
+
+<button
+class="category-btn"
+onclick="setCategory('Jeans')">
+
+Jeans
+
+</button>
+
+</div>
+
+
+<div
+class="products"
+id="products">
+
+</div>
+
+</section>
+
+
+<!-- CART -->
+
+<div
+class="cart-box"
+id="cart">
+
+<h2>Your Cart</h2>
+
+<div id="cart-items"></div>
+
+<h3>
+
+Total:
+₹<span id="total">0</span>
+
+</h3>
+
+
+<div class="checkout-form">
+
+<h3>Delivery Details</h3>
+
+<input
+id="customer-name"
+placeholder="Your Name">
+
+<input
+id="customer-phone"
+placeholder="Phone Number"
+type="tel">
+
+<textarea
+id="customer-address"
+placeholder="Delivery Address"></textarea>
+
+
+<button
+class="whatsapp"
+onclick="orderWhatsApp()">
+
+🟢 PLACE ORDER ON WHATSAPP
+
+</button>
+
+</div>
+
+</div>
+
+
+<footer>
+
+<h2>SRK</h2>
+
+<p>MEN'S CLOTHING</p>
+
+<p>
+Style • Comfort • Confidence
+</p>
+
+<p>© 2026 SRK</p>
+
+</footer>
+
+
+<script>
+
+const products =
+{{ products | tojson }};
+
+let cart = [];
+
+let selectedCategory = "All";
+
+
+function setCategory(category) {
+
+selectedCategory = category;
+
+displayProducts();
+
+}
+
+
+function displayProducts() {
+
+const container =
+document.getElementById("products");
+
+const search =
+document.getElementById("search")
+.value
+.toLowerCase();
+
+container.innerHTML = "";
+
+
+const filtered =
+products.filter(product => {
+
+const nameMatch =
+product.name
+.toLowerCase()
+.includes(search);
+
+const categoryMatch =
+selectedCategory === "All" ||
+product.category === selectedCategory;
+
+return nameMatch && categoryMatch;
+
+});
+
+
+filtered.forEach(product => {
+
+const sizes =
+product.sizes
+.map(size =>
+`<option value="${size}">
+${size}
+</option>`
+)
+.join("");
+
+
+container.innerHTML += `
+
+<div class="product">
+
+<div class="product-image">
+
+${product.emoji}
+
+</div>
+
+<div class="product-info">
+
+<h3>
+${product.name}
+</h3>
+
+<div class="category">
+${product.category}
+</div>
+
+<div class="price">
+₹${product.price}
+</div>
+
+<select
+class="size-select"
+id="size-${product.id}">
+
+${sizes}
+
+</select>
+
+<button
+class="add"
+onclick="addToCart(${product.id})">
+
+ADD TO CART
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+function addToCart(id) {
+
+const product =
+products.find(p => p.id === id);
+
+const size =
+document.getElementById(
+`size-${id}`
+).value;
+
+
+const existing =
+cart.find(item =>
+item.id === id &&
+item.size === size
+);
+
+
+if (existing) {
+
+existing.quantity++;
+
+} else {
+
+cart.push({
+
+...product,
+
+size: size,
+
+quantity: 1
+
+});
+
+}
+
+
+updateCart();
+
+alert(
+`${product.name} (${size}) added to cart`
+);
+
+}
+
+
+function changeQuantity(
+index,
+amount
+) {
+
+cart[index].quantity += amount;
+
+
+if (cart[index].quantity <= 0) {
+
+cart.splice(index, 1);
+
+}
+
+
+updateCart();
+
+}
+
+
+function removeItem(index) {
+
+cart.splice(index, 1);
+
+updateCart();
+
+}
+
+
+function updateCart() {
+
+const container =
+document.getElementById("cart-items");
+
+container.innerHTML = "";
+
+let total = 0;
+
+let count = 0;
+
+
+cart.forEach((item, index) => {
+
+const subtotal =
+item.price * item.quantity;
+
+total += subtotal;
+
+count += item.quantity;
+
+
+container.innerHTML += `
+
+<div class="cart-item">
+
+<div class="cart-top">
+
+<strong>
+${item.name}
+</strong>
+
+<button
+class="remove"
+onclick="removeItem(${index})">
+
+Remove
+
+</button>
+
+</div>
+
+<div>
+Size: ${item.size}
+</div>
+
+<div>
+₹${item.price} × ${item.quantity}
+</div>
+
+<div class="quantity">
+
+<button
+onclick="changeQuantity(${index}, -1)">
+−
+</button>
+
+${item.quantity}
+
+<button
+onclick="changeQuantity(${index}, 1)">
++
+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+
+document.getElementById("total")
+.innerText = total;
+
+document.getElementById("cart-count")
+.innerText = count;
+
+}
+
+
+function toggleCart() {
+
+document
+.getElementById("cart")
+.classList.toggle("show");
+
+}
+
+
+function orderWhatsApp() {
+
+if (cart.length === 0) {
+
+alert("Your cart is empty.");
+
+return;
+
+}
+
+
+const name =
+document.getElementById(
+"customer-name"
+).value.trim();
+
+const phone =
+document.getElementById(
+"customer-phone"
+).value.trim();
+
+const address =
+document.getElementById(
+"customer-address"
+).value.trim();
+
+
+if (!name || !phone || !address) {
+
+alert(
+"Please enter your name, phone number and delivery address."
+);
+
+return;
+
+}
+
+
+let message =
+"Hello SRK Men's Clothing!%0A%0A";
+
+message +=
+"*New Order*%0A%0A";
+
+message +=
+"Name: " +
+encodeURIComponent(name) +
+"%0A";
+
+message +=
+"Phone: " +
+encodeURIComponent(phone) +
+"%0A";
+
+message +=
+"Address: " +
+encodeURIComponent(address) +
+"%0A%0A";
+
+
+message += "*Products:*%0A";
+
+
+let total = 0;
+
+
+cart.forEach(item => {
+
+const subtotal =
+item.price * item.quantity;
+
+total += subtotal;
+
+
+message +=
+encodeURIComponent(
+`${item.name} | Size: ${item.size} | Qty: ${item.quantity} | ₹${subtotal}`
+)
++ "%0A";
+
+});
+
+
+message +=
+"%0ATotal: ₹" + total;
+
+
+const whatsappNumber =
+"919620030375";
+
+
+const url =
+"https://wa.me/" +
+whatsappNumber +
+"?text=" +
+message;
+
+
+window.open(url, "_blank");
+
+}
+
+
+displayProducts();
+
+</script>
+
+</body>
+
+</html>
