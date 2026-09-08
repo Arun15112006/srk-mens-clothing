@@ -370,7 +370,7 @@ Sizes: {{ product.sizes | join(', ') }}
 {% for image in product.images %}
 
 <img
-src="/static/uploads/{{ image }}">
+src="{{ image }}">
 
 {% endfor %}
 
