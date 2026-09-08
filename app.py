@@ -4,9 +4,16 @@ import sqlite3
 import os
 import uuid
 import pg8000.dbapi
+import cloudinary
+import cloudinary.uploader
 from urllib.parse import urlparse
 
 app = Flask(__name__)
+cloudinary.config(
+    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.environ.get("CLOUDINARY_API_KEY"),
+    api_secret=os.environ.get("CLOUDINARY_API_SECRET")
+)
 
 app.secret_key = os.environ.get(
     "SECRET_KEY",
@@ -454,15 +461,13 @@ def add_product():
                 filename
             )
 
-            file.save(
-                os.path.join(
-                    UPLOAD_FOLDER,
-                    filename
-                )
+            result = cloudinary.uploader.upload(
+            file,
+            folder="srk-products"
             )
 
             saved_images.append(
-                filename
+            result["secure_url"]
             )
 
     conn = get_db()
