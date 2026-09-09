@@ -48,6 +48,26 @@ header {
     object-fit: contain;
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.account-button {
+    background: white;
+    color: #050505;
+    text-decoration: none;
+    padding: 11px 19px;
+    border-radius: 30px;
+    font-weight: bold;
+    transition: .2s;
+}
+
+.account-button:hover {
+    transform: translateY(-2px);
+}
+
 .cart-button {
     background: white;
     color: #050505;
@@ -877,6 +897,14 @@ alt="SRK">
 
 </div>
 
+<div class="header-actions">
+
+<a
+href="{{ url_for('account') }}"
+class="account-button">
+👤 Account
+</a>
+
 <button
 class="cart-button"
 onclick="toggleCart()">
@@ -885,6 +913,8 @@ onclick="toggleCart()">
 (<span id="cart-count">0</span>)
 
 </button>
+
+</div>
 
 </header>
 
@@ -1016,6 +1046,8 @@ Style • Comfort • Confidence
 
 const products =
 {{ products | tojson }};
+
+const customerLoggedIn = {{ 'true' if session.get('customer_id') else 'false' }};
 
 let cart = [];
 
@@ -1344,6 +1376,12 @@ document
 }
 
 async function orderWhatsApp() {
+
+if (!customerLoggedIn) {
+        alert("Please login or create an account before placing an order.");
+        window.location.href = "{{ url_for('account') }}";
+        return;
+    }
 
     if (cart.length === 0) {
         alert("Your cart is empty.");

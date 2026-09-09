@@ -1059,6 +1059,15 @@ def customer_login():
 
     return render_template("customer_login.html")
 
+@app.route("/logout")
+def customer_logout():
+
+    session.pop("customer_id", None)
+    session.pop("customer_name", None)
+
+    flash("You have been logged out.")
+
+    return redirect(url_for("account"))
 
 @app.route("/my-orders")
 def my_orders():
@@ -1211,6 +1220,237 @@ def delete_order(order_id):
 # START
 
 init_db()
+
+@app.route("/account", methods=["GET", "POST"])
+def account():
+
+    customer_id = session.get("customer_id")
+
+    if request.method == "POST":
+
+        action = request.form.get("action", "")
+
+        # -------------------------
+        # LOGIN
+        # -------------------------
+        if action == "login":
+
+            identifier = request.form.get(
+                "identifier",
+                ""
+            ).strip()
+
+            password = request.form.get(
+                "password",
+                ""
+            )
+
+            if not identifier or not password:
+                flash("Please enter your email/mobile number and password.")
+                return redirect(url_for("account"))
+
+            conn = get_db()
+
+            customer = conn.execute(
+                """
+                SELECT *
+                FROM customers
+                WHERE LOWER(email) = ?
+                   OR phone = ?
+                LIMIT 1
+                """,
+                (
+                    identifier.lower(),
+                    identifier
+                )
+            ).fetchone()
+
+            conn.close()
+
+            if not customer:
+                flash("Invalid email/mobile number or password.")
+                return redirect(url_for("account"))
+
+            if not check_password_hash(
+                customer["password_hash"],
+                password
+            ):
+                flash("Invalid email/mobile number or password.")
+                return redirect(url_for("account"))
+
+            session["customer_id"] = customer["id"]
+            session["customer_name"] = customer["name"]
+
+            flash("Welcome back, " + customer["name"] + "!")
+            return redirect(url_for("account"))
+
+        # -------------------------
+        # REGISTER
+        # -------------------------
+        if action == "register":
+
+            name = request.form.get(
+                "name",
+                ""
+            ).strip()
+
+            email = request.form.get(
+                "email",
+                ""
+            ).strip().lower()
+
+            phone = request.form.get(
+                "phone",
+                ""
+            ).strip()
+
+            password = request.form.get(
+                "password",
+                ""
+            )
+
+            if not name:
+                flash("Please enter your name.")
+                return redirect(url_for("account"))
+
+            if not email and not phone:
+                flash("Please enter your email or mobile number.")
+                return redirect(url_for("account"))
+
+            if len(password) < 6:
+                flash("Password must be at least 6 characters.")
+                return redirect(url_for("account"))
+
+            conn = get_db()
+
+            existing = None
+
+            if email:
+                existing = conn.execute(
+                    """
+                    SELECT id
+                    FROM customers
+                    WHERE LOWER(email) = ?
+                    """,
+                    (email,)
+                ).fetchone()
+
+            if not existing and phone:
+                existing = conn.execute(
+                    """
+                    SELECT id
+                    FROM customers
+                    WHERE phone = ?
+                    """,
+                    (phone,)
+                ).fetchone()
+
+            if existing:
+                conn.close()
+                flash(
+                    "An account already exists with that email or mobile number."
+                )
+                return redirect(url_for("account"))
+
+            password_hash = generate_password_hash(password)
+
+            conn.execute(
+                """
+                INSERT INTO customers
+                (
+                    name,
+                    email,
+                    phone,
+                    password_hash
+                )
+                VALUES (?, ?, ?, ?)
+                """,
+                (
+                    name,
+                    email or None,
+                    phone or None,
+                    password_hash
+                )
+            )
+
+            conn.commit()
+
+            if email:
+                customer = conn.execute(
+                    """
+                    SELECT id, name
+                    FROM customers
+                    WHERE LOWER(email) = ?
+                    ORDER BY id DESC
+                    LIMIT 1
+                    """,
+                    (email,)
+                ).fetchone()
+            else:
+                customer = conn.execute(
+                    """
+                    SELECT id, name
+                    FROM customers
+                    WHERE phone = ?
+                    ORDER BY id DESC
+                    LIMIT 1
+                    """,
+                    (phone,)
+                ).fetchone()
+
+            conn.close()
+
+            if not customer:
+                flash("Account creation failed. Please try again.")
+                return redirect(url_for("account"))
+
+            session["customer_id"] = customer["id"]
+            session["customer_name"] = customer["name"]
+
+            flash("Account created successfully!")
+
+            return redirect(url_for("account"))
+
+    # -------------------------
+    # LOGGED-IN ACCOUNT
+    # -------------------------
+
+    if customer_id:
+
+        conn = get_db()
+
+        customer = conn.execute(
+            """
+            SELECT id, name, email, phone, created_at
+            FROM customers
+            WHERE id = ?
+            """,
+            (customer_id,)
+        ).fetchone()
+
+        orders = conn.execute(
+            """
+            SELECT *
+            FROM orders
+            WHERE customer_id = ?
+            ORDER BY id DESC
+            """,
+            (customer_id,)
+        ).fetchall()
+
+        conn.close()
+
+        return render_template(
+            "account.html",
+            customer=customer,
+            orders=orders
+        )
+
+    # -------------------------
+    # LOGGED-OUT ACCOUNT
+    # -------------------------
+
+    return render_template("account.html")
 
 
 if __name__ == "__main__":
