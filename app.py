@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import os
 import uuid
@@ -174,6 +175,22 @@ def init_db():
                 status TEXT DEFAULT 'New',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
+        """)
+
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS customers (
+                id SERIAL PRIMARY KEY,
+                name TEXT NOT NULL,
+                email TEXT,
+                phone TEXT,
+                password_hash TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+        conn.execute("""
+            ALTER TABLE orders
+            ADD COLUMN IF NOT EXISTS customer_id INTEGER
         """)
 
     else:
@@ -774,6 +791,12 @@ def delete_product(product_id):
 )
 def create_order():
 
+    customer_id = session.get("customer_id")
+
+    if not customer_id:
+        flash("Please login before placing your order.")
+        return redirect(url_for("customer_login"))
+
     customer_name = request.form.get(
         "customer_name",
         ""
@@ -809,34 +832,16 @@ def create_order():
         "0"
     )
 
-    if (
-        not customer_name
-        or not phone
-        or not address
-    ):
-
-        flash(
-            "Please enter your customer details."
-        )
-
-        return redirect(
-            url_for("home")
-        )
+    if not customer_name or not phone or not address:
+        flash("Please enter your customer details.")
+        return redirect(url_for("home"))
 
     try:
-
         quantity = int(quantity)
         total = float(total)
-
     except ValueError:
-
-        flash(
-            "Invalid order details."
-        )
-
-        return redirect(
-            url_for("home")
-        )
+        flash("Invalid order details.")
+        return redirect(url_for("home"))
 
     conn = get_db()
 
@@ -850,9 +855,10 @@ def create_order():
             product_name,
             size,
             quantity,
-            total
+            total,
+            customer_id
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             customer_name,
@@ -861,7 +867,8 @@ def create_order():
             product_name,
             size,
             quantity,
-            total
+            total,
+            customer_id
         )
     )
 
@@ -870,6 +877,215 @@ def create_order():
 
     return redirect(
         url_for("order_success")
+    )
+
+
+@app.route("/register", methods=["GET", "POST"])
+def customer_register():
+
+    if request.method == "POST":
+
+        name = request.form.get(
+            "name",
+            ""
+        ).strip()
+
+        email = request.form.get(
+            "email",
+            ""
+        ).strip().lower()
+
+        phone = request.form.get(
+            "phone",
+            ""
+        ).strip()
+
+        password = request.form.get(
+            "password",
+            ""
+        )
+
+        if not name:
+            flash("Please enter your name.")
+            return redirect(url_for("customer_register"))
+
+        if not email and not phone:
+            flash("Please enter your email or mobile number.")
+            return redirect(url_for("customer_register"))
+
+        if len(password) < 6:
+            flash("Password must be at least 6 characters.")
+            return redirect(url_for("customer_register"))
+
+        conn = get_db()
+
+        existing = None
+
+        if email:
+            existing = conn.execute(
+                "SELECT id FROM customers WHERE LOWER(email) = ?",
+                (email,)
+            ).fetchone()
+
+        if not existing and phone:
+            existing = conn.execute(
+                "SELECT id FROM customers WHERE phone = ?",
+                (phone,)
+            ).fetchone()
+
+        if existing:
+            conn.close()
+            flash(
+                "An account already exists with that email or mobile number."
+            )
+            return redirect(url_for("customer_login"))
+
+        password_hash = generate_password_hash(password)
+
+        conn.execute(
+            """
+            INSERT INTO customers
+            (
+                name,
+                email,
+                phone,
+                password_hash
+            )
+            VALUES (?, ?, ?, ?)
+            """,
+            (
+                name,
+                email or None,
+                phone or None,
+                password_hash
+            )
+        )
+
+        conn.commit()
+
+        if email:
+            customer = conn.execute(
+                """
+                SELECT id, name
+                FROM customers
+                WHERE LOWER(email) = ?
+                ORDER BY id DESC
+                LIMIT 1
+                """,
+                (email,)
+            ).fetchone()
+        else:
+            customer = conn.execute(
+                """
+                SELECT id, name
+                FROM customers
+                WHERE phone = ?
+                ORDER BY id DESC
+                LIMIT 1
+                """,
+                (phone,)
+            ).fetchone()
+
+        conn.close()
+
+        if not customer:
+            flash("Account creation failed. Please try again.")
+            return redirect(url_for("customer_register"))
+
+        session["customer_id"] = customer["id"]
+        session["customer_name"] = customer["name"]
+
+        flash("Account created successfully!")
+
+        return redirect(url_for("home"))
+
+    return render_template("customer_register.html")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def customer_login():
+
+    if request.method == "POST":
+
+        identifier = request.form.get(
+            "identifier",
+            ""
+        ).strip()
+
+        password = request.form.get(
+            "password",
+            ""
+        )
+
+        if not identifier or not password:
+            flash("Please enter your email/mobile number and password.")
+            return redirect(url_for("customer_login"))
+
+        conn = get_db()
+
+        customer = conn.execute(
+            """
+            SELECT *
+            FROM customers
+            WHERE LOWER(email) = ?
+               OR phone = ?
+            LIMIT 1
+            """,
+            (
+                identifier.lower(),
+                identifier
+            )
+        ).fetchone()
+
+        conn.close()
+
+        if not customer:
+            flash("Invalid email/mobile number or password.")
+            return redirect(url_for("customer_login"))
+
+        if not check_password_hash(
+            customer["password_hash"],
+            password
+        ):
+            flash("Invalid email/mobile number or password.")
+            return redirect(url_for("customer_login"))
+
+        session["customer_id"] = customer["id"]
+        session["customer_name"] = customer["name"]
+
+        flash("Welcome back, " + customer["name"] + "!")
+
+        return redirect(url_for("home"))
+
+    return render_template("customer_login.html")
+
+
+@app.route("/my-orders")
+def my_orders():
+
+    customer_id = session.get("customer_id")
+
+    if not customer_id:
+        flash("Please login to view your orders.")
+        return redirect(url_for("customer_login"))
+
+    conn = get_db()
+
+    orders = conn.execute(
+        """
+        SELECT *
+        FROM orders
+        WHERE customer_id = ?
+        ORDER BY id DESC
+        """,
+        (customer_id,)
+    ).fetchall()
+
+    conn.close()
+
+    return render_template(
+        "my_orders.html",
+        orders=orders
     )
 
 

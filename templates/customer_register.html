@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Account - SRK Men's Clothing</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-box {
+            width: 100%;
+            max-width: 430px;
+            background: #fff;
+            padding: 32px 26px;
+            border-radius: 18px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .logo img {
+            width: 90px;
+            max-width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 10px 0 8px;
+            font-size: 26px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 26px;
+            font-size: 14px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin: 16px 0 7px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #d5d5d5;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #111;
+        }
+
+        .optional {
+            color: #777;
+            font-weight: normal;
+            font-size: 12px;
+        }
+
+        .hint {
+            margin-top: 7px;
+            color: #777;
+            font-size: 12px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 24px;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: #111;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #333;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .login-link a {
+            color: #111;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .flash {
+            background: #f1f1f1;
+            border-radius: 9px;
+            padding: 10px 12px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+
+            .register-box {
+                padding: 26px 20px;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="register-box">
+
+    <div class="logo">
+        <img src="{{ url_for('static', filename='images/srk-logo.png') }}"
+             alt="SRK Men's Clothing">
+    </div>
+
+    <h1>Create Account</h1>
+
+    <div class="subtitle">
+        Create an account to track your SRK orders.
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="flash">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+
+        <label for="name">Full Name</label>
+        <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Enter your name"
+            autocomplete="name"
+            required
+        >
+
+        <label for="email">
+            Email
+            <span class="optional">(optional)</span>
+        </label>
+
+        <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+        >
+
+        <label for="phone">
+            Mobile Number
+            <span class="optional">(optional)</span>
+        </label>
+
+        <input
+            type="tel"
+            id="phone"
+            name="phone"
+            placeholder="Enter your mobile number"
+            autocomplete="tel"
+        >
+
+        <div class="hint">
+            Enter at least an email address or mobile number.
+        </div>
+
+        <label for="password">Password</label>
+
+        <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Minimum 6 characters"
+            autocomplete="new-password"
+            minlength="6"
+            required
+        >
+
+        <button type="submit">
+            CREATE ACCOUNT
+        </button>
+
+    </form>
+
+    <div class="login-link">
+        Already have an account?
+        <a href="{{ url_for('customer_login') }}">Login</a>
+    </div>
+
+</div>
+
+</body>
+</html>
