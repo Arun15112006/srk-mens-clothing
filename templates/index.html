@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+/<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -414,6 +414,180 @@ footer p {
     }
 }
 
+
+/* PRODUCT DETAILS POPUP */
+
+.product-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.75);
+    z-index: 500;
+    padding: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-modal.show {
+    display: flex;
+}
+
+.product-modal-box {
+    position: relative;
+    width: min(900px, 100%);
+    max-height: 90vh;
+    overflow-y: auto;
+    background: white;
+    border-radius: 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+    box-shadow: 0 15px 50px rgba(0,0,0,.4);
+}
+
+.modal-close {
+    position: absolute;
+    right: 15px;
+    top: 12px;
+    width: 42px;
+    height: 42px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(0,0,0,.75);
+    color: white;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.modal-image {
+    min-height: 480px;
+    background: #eee;
+}
+
+.modal-image img {
+    width: 100%;
+    height: 100%;
+    min-height: 480px;
+    object-fit: cover;
+}
+
+.modal-content {
+    padding: 45px 35px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.modal-category {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #777;
+    margin-bottom: 8px;
+}
+
+.modal-content h2 {
+    font-size: 32px;
+    margin: 0 0 12px;
+}
+
+.modal-price {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+#modalDescription {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.modal-sizes strong {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#modalSizes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+#modalSizes span {
+    padding: 9px 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.modal-add {
+    width: 100%;
+    margin-top: 28px;
+    padding: 15px;
+    border: 0;
+    border-radius: 7px;
+    background: #111;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.modal-add:hover {
+    background: #333;
+}
+
+.details {
+    width: 100%;
+    margin-top: 11px;
+    padding: 12px;
+    border: 1px solid #111;
+    background: white;
+    color: #111;
+    border-radius: 7px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.details:hover {
+    background: #111;
+    color: white;
+}
+
+@media (max-width: 700px) {
+
+    .product-modal {
+        padding: 10px;
+    }
+
+    .product-modal-box {
+        grid-template-columns: 1fr;
+        max-height: 94vh;
+    }
+
+    .modal-image {
+        min-height: 300px;
+        height: 300px;
+    }
+
+    .modal-image img {
+        min-height: 300px;
+    }
+
+    .modal-content {
+        padding: 25px 20px 30px;
+    }
+
+    .modal-content h2 {
+        font-size: 25px;
+    }
+}
+
 </style>
 
 </head>
@@ -577,6 +751,18 @@ let cart = [];
 let selectedCategory = "All";
 
 
+function imageUrl(image) {
+    if (!image) {
+        return "";
+    }
+
+    if (image.startsWith("http://") || image.startsWith("https://")) {
+        return image;
+    }
+
+    return "/static/uploads/" + image;
+}
+
 function setCategory(category) {
 
 selectedCategory = category;
@@ -595,6 +781,7 @@ const search =
 document.getElementById("search")
 .value
 .toLowerCase();
+
 
 container.innerHTML = "";
 
@@ -626,7 +813,7 @@ product.images.forEach(image => {
 photos += `
 
 <img
-src="${image}"
+src="${imageUrl(image)}"
 alt="${product.name}">
 
 `;
@@ -693,6 +880,12 @@ ${sizes}
 
 </select>
 
+
+<button
+class="details"
+onclick="showProductDetails(${product.id})">
+VIEW DETAILS
+</button>
 
 <button
 class="add"
@@ -1060,7 +1253,97 @@ async function orderWhatsApp() {
 
 displayProducts();
 
+
+function showProductDetails(id) {
+    const product = products.find(p => String(p.id) === String(id));
+
+    if (!product) {
+        return;
+    }
+
+    document.getElementById("modalCategory").textContent =
+        product.category || "";
+
+    document.getElementById("modalName").textContent =
+        product.name || "";
+
+    document.getElementById("modalPrice").textContent =
+        "₹" + product.price;
+
+    document.getElementById("modalDescription").textContent =
+        product.description || "Premium quality clothing from SRK Men's Clothing.";
+
+    const sizes = document.getElementById("modalSizes");
+
+    sizes.innerHTML = (product.sizes || [])
+        .map(size => `<span>${size}</span>`)
+        .join("");
+
+    const imageBox = document.getElementById("modalImage");
+
+    if (product.images && product.images.length > 0) {
+        imageBox.innerHTML = `
+            <img
+                src="${imageUrl(product.images[0])}"
+                alt="${product.name}">
+        `;
+    } else {
+        imageBox.innerHTML = "";
+    }
+
+    document.getElementById("modalAddButton").onclick = function() {
+        addToCart(product.id);
+        closeProductDetails();
+    };
+
+    document.getElementById("productModal").classList.add("show");
+    document.body.style.overflow = "hidden";
+}
+
+function closeProductDetails() {
+    document.getElementById("productModal").classList.remove("show");
+    document.body.style.overflow = "";
+}
+
+document.addEventListener("click", function(event) {
+    if (event.target && event.target.id === "productModal") {
+        closeProductDetails();
+    }
+});
+
 </script>
+
+
+
+<!-- PRODUCT DETAILS POPUP -->
+<div id="productModal" class="product-modal">
+    <div class="product-modal-box">
+
+        <button class="modal-close" onclick="closeProductDetails()">
+            ×
+        </button>
+
+        <div id="modalImage" class="modal-image"></div>
+
+        <div class="modal-content">
+            <p id="modalCategory" class="modal-category"></p>
+            <h2 id="modalName"></h2>
+            <div id="modalPrice" class="modal-price"></div>
+            <p id="modalDescription"></p>
+
+            <div class="modal-sizes">
+                <strong>Available Sizes</strong>
+                <div id="modalSizes"></div>
+            </div>
+
+            <button id="modalAddButton" class="modal-add">
+                ADD TO CART
+            </button>
+        </div>
+
+    </div>
+</div>
+
 
 </body>
 

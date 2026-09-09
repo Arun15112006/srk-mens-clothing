@@ -370,7 +370,7 @@ Sizes: {{ product.sizes | join(', ') }}
 {% for image in product.images %}
 
 <img
-src="{{ image }}">
+src="{% if image.startswith('http://') or image.startswith('https://') %}{{ image }}{% else %}{{ url_for('static', filename='uploads/' + image) }}{% endif %}">
 
 {% endfor %}
 
