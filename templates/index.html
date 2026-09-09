@@ -588,6 +588,79 @@ footer p {
     }
 }
 
+
+/* POPUP PHOTO GALLERY */
+
+.modal-gallery {
+    position: relative;
+    min-height: 480px;
+    background: #eee;
+}
+
+.modal-gallery .modal-image {
+    width: 100%;
+    height: 480px;
+    min-height: 0;
+}
+
+.modal-gallery .modal-image img {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    object-fit: cover;
+}
+
+.modal-gallery-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(0,0,0,.7);
+    color: white;
+    font-size: 32px;
+    line-height: 35px;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.modal-gallery-btn:hover {
+    background: #111;
+}
+
+.modal-prev {
+    left: 12px;
+}
+
+.modal-next {
+    right: 12px;
+}
+
+.modal-photo-count {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,.7);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    z-index: 5;
+}
+
+@media (max-width: 700px) {
+    .modal-gallery {
+        min-height: 300px;
+    }
+
+    .modal-gallery .modal-image {
+        height: 300px;
+    }
+}
+
 </style>
 
 </head>
@@ -1254,6 +1327,47 @@ async function orderWhatsApp() {
 displayProducts();
 
 
+let modalImages = [];
+let currentModalImage = 0;
+
+function updateModalImage() {
+    const imageBox = document.getElementById("modalImage");
+    const countBox = document.getElementById("modalPhotoCount");
+
+    if (!modalImages.length) {
+        imageBox.innerHTML = "";
+        countBox.textContent = "";
+        return;
+    }
+
+    imageBox.innerHTML = `
+        <img
+            src="${imageUrl(modalImages[currentModalImage])}"
+            alt="Product image">
+    `;
+
+    countBox.textContent =
+        `${currentModalImage + 1} / ${modalImages.length}`;
+}
+
+function previousModalImage() {
+    if (!modalImages.length) return;
+
+    currentModalImage =
+        (currentModalImage - 1 + modalImages.length) % modalImages.length;
+
+    updateModalImage();
+}
+
+function nextModalImage() {
+    if (!modalImages.length) return;
+
+    currentModalImage =
+        (currentModalImage + 1) % modalImages.length;
+
+    updateModalImage();
+}
+
 function showProductDetails(id) {
     const product = products.find(p => String(p.id) === String(id));
 
@@ -1279,17 +1393,9 @@ function showProductDetails(id) {
         .map(size => `<span>${size}</span>`)
         .join("");
 
-    const imageBox = document.getElementById("modalImage");
-
-    if (product.images && product.images.length > 0) {
-        imageBox.innerHTML = `
-            <img
-                src="${imageUrl(product.images[0])}"
-                alt="${product.name}">
-        `;
-    } else {
-        imageBox.innerHTML = "";
-    }
+    modalImages = product.images || [];
+    currentModalImage = 0;
+    updateModalImage();
 
     document.getElementById("modalAddButton").onclick = function() {
         addToCart(product.id);
@@ -1323,7 +1429,19 @@ document.addEventListener("click", function(event) {
             ×
         </button>
 
-        <div id="modalImage" class="modal-image"></div>
+        <div class="modal-gallery">
+            <button class="modal-gallery-btn modal-prev" onclick="previousModalImage()">
+                ‹
+            </button>
+
+            <div id="modalImage" class="modal-image"></div>
+
+            <button class="modal-gallery-btn modal-next" onclick="nextModalImage()">
+                ›
+            </button>
+
+            <div id="modalPhotoCount" class="modal-photo-count"></div>
+        </div>
 
         <div class="modal-content">
             <p id="modalCategory" class="modal-category"></p>
