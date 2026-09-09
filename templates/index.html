@@ -739,6 +739,126 @@ footer p {
     font-weight: bold;
 }
 
+
+/* MOBILE SHOPPING IMPROVEMENTS */
+
+@media (max-width: 600px) {
+
+    .categories {
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding: 4px 2px 12px;
+        scrollbar-width: none;
+    }
+
+    .categories::-webkit-scrollbar {
+        display: none;
+    }
+
+    .category-btn {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+
+    .products {
+        align-items: start;
+    }
+
+    .product {
+        min-width: 0;
+    }
+
+    .gallery {
+        height: 220px;
+    }
+
+    .gallery-track img {
+        object-position: center;
+    }
+
+    .product-info {
+        min-width: 0;
+    }
+
+    .product-info h3 {
+        line-height: 1.3;
+        min-height: 42px;
+    }
+
+    .product-info p {
+        line-height: 1.4;
+    }
+
+    .price {
+        margin: 8px 0 12px;
+    }
+
+    .size {
+        font-size: 14px;
+    }
+
+    .details,
+    .add {
+        min-height: 44px;
+    }
+
+    .cart-box {
+        right: 10px;
+        left: 10px;
+        top: 72px;
+        width: auto;
+        max-height: calc(100vh - 85px);
+        padding: 18px;
+        border-radius: 14px;
+    }
+
+    .checkout input,
+    .checkout textarea {
+        font-size: 16px;
+    }
+
+    .product-modal {
+        padding: 8px;
+    }
+
+    .product-modal-box {
+        width: 100%;
+        border-radius: 14px;
+    }
+
+    .modal-close {
+        width: 40px;
+        height: 40px;
+        right: 10px;
+        top: 10px;
+    }
+
+    .modal-gallery-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 28px;
+    }
+
+    .modal-content {
+        padding: 22px 16px 25px;
+    }
+
+    .modal-content h2 {
+        line-height: 1.25;
+        margin-bottom: 8px;
+    }
+
+    #modalDescription {
+        margin-bottom: 18px;
+    }
+
+    .modal-add {
+        min-height: 48px;
+        margin-top: 22px;
+    }
+}
+
 </style>
 
 </head>
