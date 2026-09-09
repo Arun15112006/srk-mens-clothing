@@ -879,6 +879,34 @@ footer p {
     }
 }
 
+.size-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 15px 0;
+}
+
+.size-button {
+    min-width: 45px;
+    padding: 9px 12px;
+    border: 1px solid #ccc;
+    background: white;
+    color: #111;
+    border-radius: 7px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.size-button:hover {
+    border-color: #000;
+}
+
+.size-button.selected {
+    background: #000;
+    color: white;
+    border-color: #000;
+}
+
 </style>
 
 </head>
@@ -951,6 +979,36 @@ class="search"
 id="search"
 placeholder="🔍 Search products..."
 oninput="displayProducts()">
+
+<div class="sort-box">
+
+    <label for="sort">
+        Sort:
+    </label>
+
+    <select
+        id="sort"
+        onchange="displayProducts()">
+
+        <option value="featured">
+            Featured
+        </option>
+
+        <option value="low">
+            Price: Low → High
+        </option>
+
+        <option value="high">
+            Price: High → Low
+        </option>
+
+        <option value="name">
+            Name: A → Z
+        </option>
+
+    </select>
+
+</div>
 
 
 <div class="categories">
@@ -1105,6 +1163,34 @@ return nameMatch && categoryMatch;
 
 });
 
+const sortType =
+document.getElementById("sort").value;
+
+if (sortType === "low") {
+
+    filtered.sort(
+        (a, b) => a.price - b.price
+    );
+
+}
+
+if (sortType === "high") {
+
+    filtered.sort(
+        (a, b) => b.price - a.price
+    );
+
+}
+
+if (sortType === "name") {
+
+    filtered.sort(
+        (a, b) =>
+            a.name.localeCompare(b.name)
+    );
+
+}
+
 
 filtered.forEach(product => {
 
@@ -1128,13 +1214,15 @@ let sizes = "";
 
 product.sizes.forEach(size => {
 
-sizes += `
-
-<option value="${size}">
-${size}
-</option>
-
-`;
+    sizes += `
+        <button
+            type="button"
+            class="size-button"
+             data-size="${size}"
+onclick="selectSize(${product.id}, '${size}')">
+            ${size}
+        </button>
+    `;
 
 });
 
@@ -1175,13 +1263,9 @@ ${product.description || ""}
 </div>
 
 
-<select
-class="size"
-id="size-${product.id}">
-
-${sizes}
-
-</select>
+<div class="size-selector" id="size-${product.id}">
+    ${sizes}
+</div>
 
 
 <button
@@ -1208,16 +1292,45 @@ ADD TO CART
 
 }
 
+function selectSize(id, size) {
 
+    const selector =
+        document.getElementById("size-" + id);
+
+    const buttons =
+        selector.querySelectorAll(".size-button");
+
+    buttons.forEach(button => {
+        button.classList.remove("selected");
+    });
+
+    const selected =
+        Array.from(buttons).find(
+            button => button.dataset.size === size
+        );
+
+    if (selected) {
+        selected.classList.add("selected");
+    }
+}
+
+ 
 function addToCart(id) {
 
 const product =
 products.find(p => p.id === id);
 
-const size =
-document.getElementById(
-"size-" + id
-).value;
+const sizeElement =
+document.querySelector(
+    "#size-" + id + " .size-button.selected"
+);
+
+if (!sizeElement) {
+    alert("Please select a size.");
+    return;
+}
+
+const size = sizeElement.dataset.size;
 
 
 const existing =
